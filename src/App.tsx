@@ -101,7 +101,7 @@ function App() {
             <AlertTitle>{messages}</AlertTitle>
           </Alert>
         ) : null}
-        <Button mt={2} type='submit' colorScheme='teal'>
+        <Button mt={4} type='submit' colorScheme='teal'>
           Buscar
         </Button>
       </form>
@@ -115,7 +115,7 @@ function App() {
       )}
 
       {state.pokemons.length && !isLoading ? (
-        <Flex flexWrap='wrap' gap='1em' mt='2em'>
+        <Flex flexWrap='wrap' justifyContent='center' gap='1em' mt='1em'>
           {state.pokemons.map(pokemon => (
             <PokemonItem key={pokemon.id} pokemon={pokemon} />
           ))}
