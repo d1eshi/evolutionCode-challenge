@@ -1,7 +1,22 @@
 import './App.css'
 import React from 'react'
-import { Alert, AlertIcon, AlertTitle, Box, Button, FormControl, HStack, Input, Skeleton, Text } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  HStack,
+  Input,
+  Skeleton,
+  Text,
+} from '@chakra-ui/react'
 import pokeApi from './pokeApi'
+import { PokemonListResponse, SmallPokemon } from '../interfaces/pokemon-list'
+import { PokemonItem } from './PokemonItem'
+import { usePokemonContext } from './PokemonContext'
 
 enum TypeParams {
   offSet = 'offSet',
@@ -14,17 +29,14 @@ const INITIAL_PARAMS = {
 }
 
 function App() {
+  const { state, dispatch } = usePokemonContext()
+
   const [params, setParams] = React.useState(INITIAL_PARAMS)
   const [messages, setMessages] = React.useState('')
   const [isLoading, setIsLoading] = React.useState(false)
-  const [pokemonList, setPokemonList] = React.useState([])
 
   const getPokemonsAPI = async () => {
-    console.log('called API', params)
-
     if (params.limit === '' && params.offSet === '') {
-      console.log('called first conditional')
-
       return setMessages('Necesitas ingresar parametros para buscar')
     }
 
@@ -36,8 +48,19 @@ function App() {
     setMessages('')
     setIsLoading(true)
 
-    const { data } = await pokeApi.get(`/pokemon?offset=${params.offSet}&limit=${params.limit}`)
-    setPokemonList(data.results)
+    const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?offset=${params.offSet}&limit=${params.limit}`)
+    console.log(data.results)
+
+    const pokemons: SmallPokemon[] = data.results.map((poke, i) => {
+      let idForURL = poke.url.split('/')[6]
+      return {
+        ...poke,
+        id: i + 1,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${idForURL}.png`,
+      }
+    })
+    dispatch({ type: 'ADD_TO_POKEMON_LIST', payload: pokemons })
+    setIsLoading(false)
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,7 +89,10 @@ function App() {
       </Text>
       <form onSubmit={handleSubmit}>
         <HStack>
+          <Text>Offset: </Text>
           <Input type='text' onChange={e => handleChange(e, TypeParams.offSet)} />
+
+          <Text>Limit: </Text>
           <Input type='text' onChange={e => handleChange(e, TypeParams.limit)} />
         </HStack>
         {messages !== '' ? (
@@ -87,6 +113,14 @@ function App() {
           <Skeleton height={200} w={200} />
         </HStack>
       )}
+
+      {state.pokemons.length && !isLoading ? (
+        <Flex flexWrap='wrap' gap='1em' mt='2em'>
+          {state.pokemons.map(pokemon => (
+            <PokemonItem key={pokemon.id} pokemon={pokemon} />
+          ))}
+        </Flex>
+      ) : null}
     </Box>
   )
 }
