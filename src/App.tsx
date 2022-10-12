@@ -90,10 +90,10 @@ function App() {
       <form onSubmit={handleSubmit}>
         <HStack>
           <Text>Offset: </Text>
-          <Input type='text' onChange={e => handleChange(e, TypeParams.offSet)} />
+          <Input type='number' onChange={e => handleChange(e, TypeParams.offSet)} />
 
           <Text>Limit: </Text>
-          <Input type='text' onChange={e => handleChange(e, TypeParams.limit)} />
+          <Input type='number' onChange={e => handleChange(e, TypeParams.limit)} />
         </HStack>
         {messages !== '' ? (
           <Alert my={2} status='error'>
