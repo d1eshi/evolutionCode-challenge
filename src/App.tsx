@@ -84,7 +84,7 @@ function App() {
 
   return (
     <Box maxW='60%' m='0 auto'>
-      <Text variant='h1' mb={2}>
+      <Text fontSize='4xl' mb={2}>
         PokeAPI
       </Text>
       <form onSubmit={handleSubmit}>

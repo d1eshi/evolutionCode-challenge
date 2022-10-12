@@ -28,6 +28,7 @@ export const PokemonItem: FC<Props> = ({ pokemon }) => {
       border='1px solid gray'
       borderRadius={10}
       position='relative'
+      p='6px'
       display='flex'
       flexDir='column'
       maxW='20%'
@@ -45,7 +46,9 @@ export const PokemonItem: FC<Props> = ({ pokemon }) => {
       <Box mt='1em'>
         <Image w='100%' h='100%' src={pokemon.image} />
       </Box>
-      <Text>{pokemon.name}</Text>
+      <Text textTransform='capitalize' fontWeight='bold'>
+        {pokemon.name}
+      </Text>
     </Box>
   )
 }
